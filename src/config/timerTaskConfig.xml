@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tasks>
+	<!-- runTime 运行时间格式 yyyy-MM-dd HH:mm:ss -->
+	<task>
+		<logicClass>com.jtcrm.ant.task.AntPackageTask</logicClass>
+		<logicMethod>runAnt</logicMethod>
+		<switch>1</switch>
+		<runTime></runTime>
+		<day>1</day>
+		<hour>0</hour>
+		<minute>0</minute>
+		<second>0</second>
+		<description>测试</description>
+	</task>
+</tasks>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project basedir="." name="myProject" default="packageWar">
+	<!--
+	
+		以下属性在程序里设置
+		
+		svn.username		svn用户名
+		svn.password		svn密码
+		svn.source			打好包放的位置
+		svn.temp			svn检出的合位置
+		svn.repository		svn地址
+		projectName			项目名称
+		svn.libPath			svn需要的一些jar包目录（检出代码，更新代码时需要用）
+		dir.javaee			javaee的目录（编译的时候有用到，不然会报找不到javax.servlet包的类）
+
+	-->
+	
+	<!-- 程序检也目录 -->
+	<property name="dir.tempBuild" value="${svn.temp}/${projectName}" />
+	
+	<!-- 程序源代码路径 -->
+	<property name="dir.src" value="${dir.tempBuild}/JavaSource" />
+	
+	<!-- 程序资源文件路径 -->
+	<property name="dir.bpsconfig" value="${dir.tempBuild}/bpsconfig" />
+
+	<!-- 程序资源文件路径 -->
+	<property name="dir.sysconfig" value="${dir.tempBuild}/sysconfig" />
+	
+	<!-- 程序包根目录 -->
+	<property name="dir.web" value="${dir.tempBuild}/WebRoot" />
+
+	<!-- 程序依赖类库目录 -->
+	<property name="dir.lib" value="${dir.web}/WEB-INF/lib" />
+	
+	<!-- 程序编译后class文件存放目录 -->
+	<property name="dir.classes" value="${dir.web}/WEB-INF/classes" />
+	
+	<!--  日期格式  用于war包名  -->
+	<tstamp prefix="tempPro.">
+		<format property="TimeSign" pattern="yyyy-MM-dd HH_mm_ss" />
+	</tstamp>
+	
+	<!--  日期格式  用于war包存放目录   -->
+	<tstamp prefix="tempPro.">
+		<format property="today" pattern="yyyyMMdd" />
+	</tstamp>
+	
+	<!-- 项目中类库 -->
+	<path id="applib">
+		<fileset dir="${dir.lib}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${dir.javaee}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- svn 用到的jar包 -->
+	<path id="antlib">
+		<fileset dir="${svn.libPath}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="svnCheckout" description=" 检出程序代码 ">
+		<delete dir="${dir.tempBuild}" />
+		<java classname="org.tmatesoft.svn.cli.SVN" dir="${svn.temp}" fork="true">
+			<arg value="checkout" />
+			<arg value="--username" />
+			<arg value="${svn.username}" />
+			<arg value="--password" />
+			<arg value="${svn.password}" />
+			<arg value="${svn.repository}/${projectName}" />
+			<classpath refid="antlib" />
+		</java>
+	</target>
+
+	<target name="svnUpdate" description=" 更新程序代码 ">
+		<java classname="org.tmatesoft.svn.cli.SVN" dir="${svn.temp}" fork="true">
+			<arg value="update" />
+			<arg value="--username" />
+			<arg value="${svn.username}" />
+			<arg value="--password" />
+			<arg value="${svn.password}" />
+			<arg value="${dir.tempBuild}" />
+			<classpath refid="antlib" />
+		</java>
+	</target>
+
+	<target name="clean" description=" 清理class文件 " >
+		<echo message="${dir.javaee}" />
+		<delete dir="${dir.classes}" />
+	</target>
+
+	<target name="compile" depends="svnUpdate,clean" description=" 编译程序代码 ">
+		<mkdir dir="${dir.classes}" />
+		<javac encoding="utf-8" destdir="${dir.classes}" srcdir="${dir.src}" excludes="**/.svn/**" includeAntRuntime="false">
+			<classpath refid="applib" />
+		</javac>
+		<copy todir="${dir.classes}" preservelastmodified="true">
+			<fileset dir="${dir.bpsconfig}" excludes="**/*.java">
+			</fileset>
+		</copy>
+		<copy todir="${dir.classes}" preservelastmodified="true">
+			<fileset dir="${dir.sysconfig}" excludes="**/*.java">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="packageWar" depends="compile" description=" 程序打包 ">
+		<war destfile="${svn.source}/${tempPro.today}/${projectName}_NEW_${tempPro.TimeSign}.war" webxml="${dir.web}/WEB-INF/web.xml" basedir="${dir.web}" />
+	</target>
+</project>
