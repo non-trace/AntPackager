@@ -1,4 +1,4 @@
-package com.jtcrm.ant.timer;
+package com.nontrace.ant.timer;
 
 import java.text.DateFormat;
 import java.text.ParseException;
