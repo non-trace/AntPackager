@@ -82,12 +82,19 @@ public class TimerTaskListener implements ServletContextListener {
 						System.out.println("启动定时器:\""+config.getDescription()+"\" 第一次执行时间一分钟后，执行周期" + tt.getPeriod()+"ms");
 						timer.schedule(tt,60 * 1000, tt.getPeriod());
 					} else {
-						while(new Date().getTime()>date.getTime()){
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(date);
-							cal.add(Calendar.SECOND, (int) (tt.getPeriod()/1000));
-							date = cal.getTime();
+						Calendar now = Calendar.getInstance();
+						Calendar cdate = Calendar.getInstance();
+						now.setTime(new Date());
+						cdate.setTime(date);
+						if (cdate.before(now)) {//如果设置的启动时间比当前时间早，将启动时间的年月日改为当前时间的年月日
+							cdate.set(Calendar.YEAR, now.get(Calendar.YEAR));
+							cdate.set(Calendar.MONDAY, now.get(Calendar.MONDAY));
+							cdate.set(Calendar.DATE, now.get(Calendar.DATE));
+							if (cdate.before(now)) {//如果还是早，设置为明天的这个时间点
+								cdate.add(Calendar.DATE,1);
+							}
 						}
+						date = cdate.getTime();
 						System.out.println("启动定时器:\""+config.getDescription()+"\" 第一次执行时间" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date) + "，执行周期" + tt.getPeriod()+"ms");
 						timer.schedule(tt, date, tt.getPeriod());
 					}
@@ -100,5 +107,23 @@ public class TimerTaskListener implements ServletContextListener {
 		if (null != timer) {
 			timer.cancel();
 		}
+	}
+	public static void main(String[] args) throws ParseException {
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = sd.parse("2013-02-11 07:30:24");
+		Calendar now = Calendar.getInstance();
+		Calendar cdate = Calendar.getInstance();
+		now.setTime(new Date());
+		cdate.setTime(date);
+		if (cdate.before(now)) {//如果设置的启动时间比当前时间早，将启动时间的年月日改为当前时间的年月日
+			cdate.set(Calendar.YEAR, now.get(Calendar.YEAR));
+			cdate.set(Calendar.MONDAY, now.get(Calendar.MONDAY));
+			cdate.set(Calendar.DATE, now.get(Calendar.DATE));
+			if (cdate.before(now)) {//如果还是早，设置为明天的这个时间点
+				cdate.add(Calendar.DATE,1);
+			}
+		}
+		date = cdate.getTime();
+		System.out.println(date);
 	}
 }
