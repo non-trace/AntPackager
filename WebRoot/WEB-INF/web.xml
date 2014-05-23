@@ -5,7 +5,7 @@
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<!-- 后台任务管理器 -->
 	<listener>
-		<listener-class>com.jtcrm.ant.timer.TimerTaskListener</listener-class>
+		<listener-class>com.nontrace.ant.timer.TimerTaskListener</listener-class>
 	</listener>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
