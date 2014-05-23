@@ -5,7 +5,7 @@
 		<logicClass>com.jtcrm.ant.task.AntPackageTask</logicClass>
 		<logicMethod>runAnt</logicMethod>
 		<switch>1</switch>
-		<runTime></runTime>
+		<runTime>2014-05-23 08:50:00</runTime>
 		<day>1</day>
 		<hour>0</hour>
 		<minute>0</minute>
