@@ -2,7 +2,7 @@
 <tasks>
 	<!-- runTime 运行时间格式 yyyy-MM-dd HH:mm:ss -->
 	<task>
-		<logicClass>com.jtcrm.ant.task.AntPackageTask</logicClass>
+		<logicClass>com.nontrace.ant.task.AntPackageTask</logicClass>
 		<logicMethod>runAnt</logicMethod>
 		<switch>1</switch>
 		<runTime>2014-05-23 08:50:00</runTime>
